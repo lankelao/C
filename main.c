@@ -44,8 +44,10 @@ LRESULT CALLBACK MyWNDPROC(HWND hWnd, UINT message, WPARAM wParam, LPARAM lparam
 	PAINTSTRUCT ps;
 	HDC hdc;
 	HBRUSH hBrush;
-	int x;
-	int y;
+	static int x_a = 50;
+	static int y_a = 50;
+	static int x_b = 50;
+	static int y_b = 150;
 	char str[20] = {0};
 	switch(message)
 	{
@@ -57,29 +59,35 @@ LRESULT CALLBACK MyWNDPROC(HWND hWnd, UINT message, WPARAM wParam, LPARAM lparam
 		{
 			MessageBox(hWnd,"要想生活过的去","温习提示",MB_YESNO);
 		}*/
-		hdc = GetDC(hWnd);
+		/*hdc = GetDC(hWnd);
 		hBrush = CreateSolidBrush(RGB(255,0,0));
 		SelectObject(hdc,hBrush);
 		Ellipse(hdc,50,50,350,350);
-		ReleaseDC(hWnd,hdc);
+		ReleaseDC(hWnd,hdc);*/
 		break;
 	case WM_LBUTTONDOWN:
-		x = LOWORD(lparam);
+		/*x = LOWORD(lparam);
 		y = HIWORD(lparam);
 
 		hdc = GetDC(hWnd);
 		Ellipse(hdc,x-15,y-15,x+15,y+15);
-		ReleaseDC(hWnd,hdc);
+		ReleaseDC(hWnd,hdc);*/
 		/*sprintf(str,"%d %d",x,y);
 		MessageBox(hWnd,str,"温习提示",MB_YESNO);*/
 		break;
 	case WM_PAINT:   //重绘
-		hdc = BeginPaint(hWnd,&ps);
+		/*hdc = BeginPaint(hWnd,&ps);
 		Rectangle(hdc,50,50,350,350);
-		EndPaint(hWnd,&ps);
+		EndPaint(hWnd,&ps);*/
 		break;
 	case WM_TIMER:
-		MessageBox(hWnd,"你傻啊","要想生活过得去",MB_OK);
+		x_a += 5;
+		x_b += 10;
+		hdc = GetDC(hWnd);
+		/*MessageBox(hWnd,"你傻啊","要想生活过得去",MB_OK);*/
+		Rectangle(hdc,x_a,y_a,x_a+50,y_a+50);
+		Rectangle(hdc,x_b,y_b,x_b+50,y_b+50);
+		ReleaseDC(hWnd,hdc);
 		break;
 	}
 	return DefWindowProc(hWnd,message,wParam,lparam);
