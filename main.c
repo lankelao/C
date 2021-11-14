@@ -1,4 +1,3 @@
-定时器
 #include<Windows.h>
 #include<stdio.h>
 LRESULT CALLBACK MyWNDPROC(HWND hWnd, UINT message, WPARAM wParam, LPARAM lparam);
@@ -32,6 +31,7 @@ int CALLBACK WinMain(HINSTANCE hInstance,//句柄可以访问内存，不能修改
 	ShowWindow(hWnd,SW_SHOW);
 	//设置定时器
 	SetTimer(hWnd,1,500,NULL);
+	SetTimer(hWnd,2,200,NULL);
 
 	while(GetMessage(&Msg,NULL,0,0))//对窗口不停获取消息
 	{
@@ -65,6 +65,14 @@ LRESULT CALLBACK MyWNDPROC(HWND hWnd, UINT message, WPARAM wParam, LPARAM lparam
 		SelectObject(hdc,hBrush);
 		Ellipse(hdc,50,50,350,350);
 		ReleaseDC(hWnd,hdc);*/
+		if(65 == wParam)
+		{
+			KillTimer(hWnd,1);
+		}
+		if(66 == wParam)
+		{
+			KillTimer(hWnd,2);
+		}
 		break;
 	case WM_LBUTTONDOWN:
 		/*x = LOWORD(lparam);
@@ -82,12 +90,18 @@ LRESULT CALLBACK MyWNDPROC(HWND hWnd, UINT message, WPARAM wParam, LPARAM lparam
 		EndPaint(hWnd,&ps);*/
 		break;
 	case WM_TIMER:
-		x_a += 5;
-		x_b += 10;
 		hdc = GetDC(hWnd);
 		/*MessageBox(hWnd,"你傻啊","要想生活过得去",MB_OK);*/
-		Rectangle(hdc,x_a,y_a,x_a+50,y_a+50);
-		Rectangle(hdc,x_b,y_b,x_b+50,y_b+50);
+		if(1 == wParam)
+		{
+			x_a += 5;
+			Rectangle(hdc,x_a,y_a,x_a+50,y_a+50);
+		}
+		if(2 == wParam)
+		{
+			x_b += 5;
+			Rectangle(hdc,x_b,y_b,x_b+50,y_b+50);
+		}
 		ReleaseDC(hWnd,hdc);
 		break;
 	}
