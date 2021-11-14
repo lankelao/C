@@ -1,3 +1,4 @@
+¶¨Ê±Æ÷
 #include<Windows.h>
 #include<stdio.h>
 LRESULT CALLBACK MyWNDPROC(HWND hWnd, UINT message, WPARAM wParam, LPARAM lparam);
