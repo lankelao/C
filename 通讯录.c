@@ -1,5 +1,5 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include<stdio.h>//可以把头文件和声明都存到自己头文件里，用#include "MyHead.h"调用
+#include<stdlib.h>// " "优先调用自己的头文件，< >优先调用系统头文件
 #include<time.h>
 #include<string.h>
 
