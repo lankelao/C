@@ -16,18 +16,14 @@ void AddNode(Node **ppHead,Node **ppEnd,Node *pNode);//2.Ìí¼ÓÁ´±í  (Í·   Î²    Ì
 int GetId();//3.×Ô¶¯Éú³É±àºÅ
 char* GetName();//4.ĞÕÃûµç»°Ô­±¾·ÅÔÚ×Ö·û³£Á¿Çø£¬½«À´¿ÉÄÜÒª¸ÄËùÒÔÒª·ÅÔÚ¶ÑÇø
 char* GetTel();//5.µç»°
+void InitInfo(Node **ppHead,Node **ppEnd,int n);//6.³õÊ¼»¯Êı¾İ È¥µô²âÊÔÊı¾İ
 int main()
 {
 	Node *pHead = NULL;
 	Node *pEnd = NULL;
-    int i;
 
-	srand((unsigned int)time(NULL));//ÓÃËæ»úÊıÏÈÂñÖÖ×Ó£¬Ëæ»úÖÖ×ÓÖ»ÄÜÂñÒ»´Î£¬
-
-	for(i=0;i<100;i++)//²âÊÔÓÃ
-	{
-		AddNode(&pHead,&pEnd,GetNode());
-	}
+	InitInfo(&pHead,&pEnd,10);
+	
 	while(pHead != NULL)
 	{
 		printf("%d\t%s\t%s\n",pHead->id,pHead->name,pHead->tel);
@@ -108,4 +104,13 @@ char* GetTel()
 	pTel[i] = '\0';
 
 	return pTel;
+}
+void InitInfo(Node **ppHead,Node **ppEnd,int n)//ppHead´æµÄ¾ÍÊÇpHeadµÄµØÖ·,³õÊ¼»¯nÌõ
+{
+	int i;
+	srand((unsigned int)time(NULL));//ÓÃËæ»úÊıÏÈÂñÖÖ×Ó£¬Ëæ»úÖÖ×ÓÖ»ÄÜÂñÒ»´Î£¬
+	for(i=0;i<n;i++)//²âÊÔÓÃ
+	{
+		AddNode(ppHead,ppEnd,GetNode());
+	}
 }
