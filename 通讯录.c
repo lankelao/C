@@ -25,7 +25,8 @@ int GetId();//3.自动生成编号
 char* GetName();//4.姓名电话原本放在字符常量区，将来可能要改所以要放在堆区
 char* GetTel();//5.电话
 void InitInfo(Node **ppHead,Node **ppEnd,int n);//6.初始化数据 去掉测试数据
-Page* GetPage(Node *pHead,int n);//
+Page* GetPage(Node *pHead,int n);
+void ShowInfo(Node *pHead,Page *pPage);//显示分页信息
 
 
 int main()
@@ -38,11 +39,14 @@ int main()
 
 	pPage = GetPage(pHead,10);
 	
-	while(pHead != NULL)
-	{
-		printf("%d\t%s\t%s\n",pHead->id,pHead->name,pHead->tel);
-		pHead = pHead->pNext;
-	}
+	pPage->CurrentPage = 11;//查看第11页
+
+	ShowInfo(pHead,pPage);
+	//while(pHead != NULL)
+	//{
+	//	printf("%d\t%s\t%s\n",pHead->id,pHead->name,pHead->tel);
+	//	pHead = pHead->pNext;
+	//}
 
 	return 0;
 }
@@ -151,4 +155,21 @@ Page* GetPage(Node *pHead,int n)
 	//}
 	pPage->TotalPage = pPage->TotalInfo%pPage->OnePageInfo == 0 ? pPage->TotalInfo / pPage->OnePageInfo : pPage->TotalInfo / pPage->OnePageInfo +1;
 	return pPage;
+}
+void ShowInfo(Node *pHead,Page *pPage)
+{
+	int begin = pPage->CurrentPage * pPage->OnePageInfo -9;
+	int end = pPage->CurrentPage * pPage->OnePageInfo;
+	int count = 0;
+
+	while(pHead != NULL)
+	{
+		count++;
+		if(begin<=count && count<=end)
+		{
+			printf("%d\t%s\t%s\n",pHead->id,pHead->name,pHead->tel);
+		}
+		pHead = pHead->pNext;
+	}
+	return;
 }
