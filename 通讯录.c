@@ -11,18 +11,32 @@ typedef struct NODE
 	struct NODE *pNext;//ÓÐÁ´±íÖ÷º¯Êý¾ÍÒªÓÐÍ·Î²Ö¸Õë
 }Node;
 
+typedef struct PAGE
+{
+	int TotalInfo; //×ÜÌõÊý
+	int TotalPage;  //×ÜÒ³Êý
+	int CurrentPage;  //µ±Ç°Ò³
+	int OnePageInfo; //Ã¿Ò³ÏÔÊ¾¶àÉÙÌõ
+}Page;
+
 Node* GetNode();//1.²âÊÔÓÃ   »ñµÃ½Úµã£¬²ÎÊýidÄÚ²¿Éú³É£¬Ãû×ÖËæ»ú£¬µç»°Ëæ»ú£¬ËùÒÔ²»ÓÃ²ÎÊý
 void AddNode(Node **ppHead,Node **ppEnd,Node *pNode);//2.Ìí¼ÓÁ´±í  (Í·   Î²    Ìí¼ÓµÄË­)
 int GetId();//3.×Ô¶¯Éú³É±àºÅ
 char* GetName();//4.ÐÕÃûµç»°Ô­±¾·ÅÔÚ×Ö·û³£Á¿Çø£¬½«À´¿ÉÄÜÒª¸ÄËùÒÔÒª·ÅÔÚ¶ÑÇø
 char* GetTel();//5.µç»°
 void InitInfo(Node **ppHead,Node **ppEnd,int n);//6.³õÊ¼»¯Êý¾Ý È¥µô²âÊÔÊý¾Ý
+Page* GetPage(Node *pHead,int n);//
+
+
 int main()
 {
 	Node *pHead = NULL;
 	Node *pEnd = NULL;
+	Page *pPage = NULL;
 
-	InitInfo(&pHead,&pEnd,10);
+	InitInfo(&pHead,&pEnd,101);
+
+	pPage = GetPage(pHead,10);
 	
 	while(pHead != NULL)
 	{
@@ -113,4 +127,28 @@ void InitInfo(Node **ppHead,Node **ppEnd,int n)//ppHead´æµÄ¾ÍÊÇpHeadµÄµØÖ·,³õÊ¼»
 	{
 		AddNode(ppHead,ppEnd,GetNode());
 	}
+}
+Page* GetPage(Node *pHead,int n)
+{
+	//1.¸ø½á¹¹ÌåÉêÇë¿Õ¼ä
+	Page *pPage = (Page*)malloc(sizeof(Page));
+	pPage->CurrentPage = 1;
+	pPage->OnePageInfo = n;
+	pPage->TotalInfo = 0;
+	//2.Í¨¹ýÁ´±í°Ñ½á¹¹ÌåÀïµÄÖµ¶¼¸³ÉÏ
+	while(pHead != NULL)//Ö»ÊÇ±éÀú£¬ÓÃÖµ´«µÝ£¬²ÎÊýÖ»ÐèÒªNode*pHead
+	{
+		pPage->TotalInfo++;
+		pHead = pHead->pNext;
+	}
+	//if(pPage->TotalInfo%pPage->OnePageInfo == 0)
+	//{
+	//	pPage->TotalPage = pPage->TotalInfo / pPage->OnePageInfo;
+	//}
+	//else
+	//{
+	//	pPage->TotalPage = pPage->TotalInfo / pPage->OnePageInfo +1;
+	//}
+	pPage->TotalPage = pPage->TotalInfo%pPage->OnePageInfo == 0 ? pPage->TotalInfo / pPage->OnePageInfo : pPage->TotalInfo / pPage->OnePageInfo +1;
+	return pPage;
 }
