@@ -29,26 +29,46 @@ Page* GetPage(Node *pHead,int n);//7.
 void ShowInfo(Node *pHead,Page *pPage);//8.显示分页信息
 void ShowMenu(Page *pPage);//9.显示菜单
 void TurnPage(Page *pPage,Node *pHead);//10.翻页
+char GetKey();//11.去掉回车'\n'带来的错误
+void Browse(Node *pHead);//12.把查看功能封装起来
+Node* GetNodeIn(); //13.添加通讯录
+char *GetString();//14.添加名字和电话
+void Query(Node *pHead);//15.查询通讯录
 
 int main()
 {
 	Node *pHead = NULL;
 	Node *pEnd = NULL;
-	Page *pPage = NULL;
+	char c;
 
 	InitInfo(&pHead,&pEnd,101);
 
-	pPage = GetPage(pHead,10);
-	
-	//pPage->CurrentPage = 2;//查看第2页
+	//		Browse(pHead);
 
-	TurnPage(pPage,pHead);
-	//while(pHead != NULL)
-	//{
-	//	printf("%d\t%s\t%s\n",pHead->id,pHead->name,pHead->tel);
-	//	pHead = pHead->pNext;
-	//}
+	while(1)
+	{
+		printf("1.查看通讯录\n");
+		printf("2.添加信息\n");
+		printf("3.查询信息\n");
+		printf("4.删除信息\n");
+		printf("5.修改信息\n");
+		printf("q.退出\n");
 
+		c = GetKey();
+
+		switch (c)
+		{
+		case '1':
+			Browse(pHead);
+			break;
+		case '2':
+			AddNode(&pHead,&pEnd,GetNodeIn());
+			break;
+		case 'q':
+			return;
+			break;
+		}
+	}
 	return 0;
 }
 Node* GetNode()
@@ -217,7 +237,78 @@ void TurnPage(Page *pPage,Node *pHead)
 			printf("按错了\n");
 			break;
 		}
-		c = getchar();
+		c = GetKey();
 	}
 	return;
+}
+char GetKey()
+{
+	char c;
+	char z;
+	int flag = 1;
+	while((c = getchar()) != '\n' || flag == 1)
+	{
+		z = c;
+		flag = 0;
+	}
+	return z;
+}
+void Browse(Node *pHead)
+{
+	Page *pPage = GetPage(pHead,10);
+	TurnPage(pPage,pHead);
+
+	return;
+}
+Node* GetNodeIn()
+{
+	Node *pNode = (Node*)malloc(sizeof(Node));
+	pNode->id = GetId();
+	printf("请输入姓名:\n");
+	pNode->name = GetString();
+	printf("请输入电话:\n");
+	pNode->tel = GetString();
+	pNode->pNext = NULL;
+
+	return pNode;
+}
+char *GetString()
+{
+	char c;
+	int size = 5;
+	int count = 0;
+	char *str = (char*)malloc(size);
+	char *pMark = str;
+	char *newstr = NULL;
+
+	while((c = getchar()) != '\n')
+	{
+		*str++ = c;
+		count++;
+		if(count+1 == size)
+		{
+			*str = '\0';
+			size += 5;
+			newstr = (char*)malloc(size);
+			strcpy_s(newstr,size,pMark);
+			free(pMark);
+			pMark = newstr;
+			str = newstr + count;
+		}
+	}
+	*str = '\0';
+
+	return pMark;
+}
+void Query(Node *pHead)
+{
+	//1.输入关键字
+		//确认   重新输入
+
+	//2.在链表中去匹配输入的关键字    姓名和电话同时匹配   支持前缀模糊查找
+
+	//3.将查到匹配的建立一个新链表  分页显示
+
+	//4.重新查询
+
 }
