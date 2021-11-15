@@ -19,6 +19,9 @@ typedef struct PAGE
 	int OnePageInfo; //每页显示多少条
 }Page;
 
+int g_menu_type;//为了重新查询按钮
+char g_Key; //按b返回不了，本来应该用传参来按的是啥，降低难度用全局变量
+
 Node* GetNode();//1.测试用   获得节点，参数id内部生成，名字随机，电话随机，所以不用参数
 void AddNode(Node **ppHead,Node **ppEnd,Node *pNode);//2.添加链表  (头   尾    添加的谁)
 int GetId();//3.自动生成编号
@@ -43,7 +46,6 @@ int main()
 
 	InitInfo(&pHead,&pEnd,101);
 
-	//		Browse(pHead);
 
 	while(1)
 	{
@@ -59,10 +61,15 @@ int main()
 		switch (c)
 		{
 		case '1':
+			g_menu_type = 1;
 			Browse(pHead);
 			break;
 		case '2':
 			AddNode(&pHead,&pEnd,GetNodeIn());
+			break;
+		case '3':
+			g_menu_type = 3;
+			Query(pHead);
 			break;
 		case 'q':
 			return;
@@ -196,7 +203,15 @@ void ShowInfo(Node *pHead,Page *pPage)
 }
 void ShowMenu(Page *pPage)
 {
-	printf("当前第%d页  共%d页  共%d条  w上一页  s下一页  b返回\n",pPage->CurrentPage,pPage->TotalPage,pPage->TotalInfo);
+	switch(g_menu_type)
+	{
+	case 1:
+		printf("当前第%d页  共%d页  共%d条  w上一页  s下一页  b返回\n",pPage->CurrentPage,pPage->TotalPage,pPage->TotalInfo);
+		break;
+	case 3:
+		printf("当前第%d页  共%d页  共%d条  w上一页  s下一页  c重新查询  b返回\n",pPage->CurrentPage,pPage->TotalPage,pPage->TotalInfo);
+		break;
+	}
 	return;
 }
 void TurnPage(Page *pPage,Node *pHead)
@@ -209,7 +224,7 @@ void TurnPage(Page *pPage,Node *pHead)
 		case 's':
 			if(pPage->CurrentPage >= pPage->TotalPage)
 			{
-				printf("已经是最后一页了");
+				printf("已经是最后一页了\n");
 			}
 			else
 			{
@@ -221,7 +236,7 @@ void TurnPage(Page *pPage,Node *pHead)
 		case 'w':
 			if(pPage->CurrentPage <= 1)
 			{
-				printf("已经是第一页了");
+				printf("已经是第一页了\n");
 			}
 			else
 			{
@@ -233,11 +248,15 @@ void TurnPage(Page *pPage,Node *pHead)
 		case 'b':
 			return;
 			break;
+		case 'c':
+			return;
+			break;
 		default:
 			printf("按错了\n");
 			break;
 		}
 		c = GetKey();
+		g_Key = c;
 	}
 	return;
 }
@@ -302,13 +321,71 @@ char *GetString()
 }
 void Query(Node *pHead)
 {
+	Node *pNode = NULL;
+	Node *pNewHead = NULL;
+	Node *pNewEnd = NULL;
+	Node *pMark = pHead;
+	Node *pDel = NULL;
+	char *pKeyWord = NULL;
 	//1.输入关键字
-		//确认   重新输入
+	while(1)
+	{
+		while(1)
+		{
+			printf("请输入关键字:\n");
+			pKeyWord = GetString();
+			printf("a确认  按其他键重新输入\n");
+			//确认   重新输入
+			if(GetKey() == 'a')
+			{
+				break;
+			}
+			else
+			{
+				free(pKeyWord);//释放堆区GetKey
+				pKeyWord = NULL;
+			}
+			
+		}
+		//printf("%s\n",pKeyWord);//测试好使不
+		//2.在链表中去匹配输入的关键字    姓名和电话同时匹配   支持前缀模糊查找
+			//遍历链表  
+		pHead = pMark;
+		while(pHead != NULL)
+		{
+			if(strncmp(pKeyWord,pHead->name,strlen(pKeyWord)) == 0 || strncmp(pKeyWord,pHead->tel,strlen(pKeyWord)) == 0)
+			{
+				//复制节点
+				pNode = (Node*)malloc(sizeof(Node));
+				pNode->id = pHead->id;
+				pNode->name = pHead->name;//这里注意，只是查看可以直接指向堆区空间，别的操作（改变堆区值）需要再复制出一个空间
+				pNode->tel = pHead->tel;
+				pNode->pNext = NULL;//这里赋NULL；
 
-	//2.在链表中去匹配输入的关键字    姓名和电话同时匹配   支持前缀模糊查找
+				//建立新的链表
+				AddNode(&pNewHead,&pNewEnd,pNode);
+			}
+			pHead = pHead->pNext;
+		}
+		//3.将查到匹配的复制下来添加到一个新链表  分页显示
+		Browse(pNewHead);
+		//4.重新查询  删除原来复制的节点
+		while(pNewHead != NULL)
+		{
+			pDel = pNewHead;
+			pNewHead = pNewHead->pNext;
+			free(pDel);
+			pDel = NULL;
+		}
+		//删除完之后链表全部删除掉了，pNewHead和pNewEnd不知道会不会变成NULL，所以赋NULL;
+		pNewHead = NULL;
+		pNewEnd = NULL;
 
-	//3.将查到匹配的建立一个新链表  分页显示
+		if('b' == g_Key)
+		{
+			break;
+		}
 
-	//4.重新查询
-
+	}
+	return;
 }
